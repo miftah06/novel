@@ -14,17 +14,16 @@ def process_keywords_from_txt(input_file):
         keywords_txt = file.read().lower().split()
     return list(set(keywords_txt))  # Remove duplicates and convert to list
 
-def randomize_words(text, num_iterations):
+def randomize_words(text):
     words_list = text.split()
-    for _ in range(num_iterations):
-        random.shuffle(words_list)
+    random.shuffle(words_list)
     return ' '.join(words_list)
 
 def construct_novel_html(title, synopsis, keywords_csv, keywords_txt):
     novel_content = [f"<h1>{title}</h1>\n\n"]
 
     # Randomize words in the synopsis
-    randomized_synopsis = randomize_words(synopsis, random.randint(50, 100))
+    randomized_synopsis = randomize_words(synopsis)
     novel_content.append(f"<p><strong>Sinopsis:</strong> {randomized_synopsis}</p>\n\n")
 
     # Adding unique keywords from CSV to the plot
