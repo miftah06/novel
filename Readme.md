@@ -1,4 +1,4 @@
-Soal-Generator adalah skrip sederhana untuk menghasilkan soal acak berbasis teks. Skrip ini memungkinkan pengguna untuk membuat sejumlah soal pilihan ganda dengan variasi yang dapat dikonfigurasi.
+Novel-Generator adalah skrip sederhana untuk menghasilkan soal acak berbasis teks. Skrip ini memungkinkan pengguna untuk membuat sejumlah soal pilihan ganda dengan variasi yang dapat dikonfigurasi.
 Cara Menggunakan
 
     Pastikan Python sudah terinstal di sistem Anda. Jika belum, Anda dapat mengunduhnya dari python.org.
