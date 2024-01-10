@@ -6,7 +6,7 @@ Cara Menggunakan
     Unduh proyek ini ke sistem Anda atau gunakan perintah git clone:
 
     bash
-git clone https://github.com/miftah06/Soal.git
+git clone https://github.com/miftah06/novel.git
 
 cd novel
 
