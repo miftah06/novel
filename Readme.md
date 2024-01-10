@@ -1,4 +1,16 @@
-Certainly! Here's an updated `readme.md` to reflect the usage of the scripts:
+Soal-Generator adalah skrip sederhana untuk menghasilkan soal acak berbasis teks. Skrip ini memungkinkan pengguna untuk membuat sejumlah soal pilihan ganda dengan variasi yang dapat dikonfigurasi.
+Cara Menggunakan
+
+    Pastikan Python sudah terinstal di sistem Anda. Jika belum, Anda dapat mengunduhnya dari python.org.
+
+    Unduh proyek ini ke sistem Anda atau gunakan perintah git clone:
+
+    bash
+git clone https://github.com/miftah06/Soal.git
+
+cd novel
+
+python nulis.py
 
 ```markdown
 # Novel Generator Scripts
