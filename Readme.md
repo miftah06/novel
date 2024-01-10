@@ -1,5 +1,5 @@
 Novel-Generator adalah skrip sederhana untuk menghasilkan Novel acak dalam bentuk ke pdf, untuk mengeditnya bisa ubah dulu
-ke dalam bentuk txt atau docx dengan pdf converter tools . Skrip ini memungkinkan pengguna untuk membuat sejumlah soal pilihan ganda dengan variasi yang dapat dikonfigurasi.
+ke dalam bentuk txt atau docx dengan pdf converter tools . Skrip ini memungkinkan pengguna untuk membuat Novel dengan variasi yang dapat dikonfigurasi.
 Cara Menggunakan
 
     Pastikan Python sudah terinstal di sistem Anda. Jika belum, Anda dapat mengunduhnya dari python.org.
