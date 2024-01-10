@@ -1,0 +1,14 @@
+chardet
+fpdf
+nltk
+numpy
+beautifulsoup4
+torch
+reportlab
+Pypdf2
+cairosvg
+svgwrite
+weasyprint
+pdfkit
+wkhtmltopdf
+PyMuPDF
