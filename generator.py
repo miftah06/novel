@@ -24,7 +24,7 @@ def generate_object_names(keywords_file, num_objects=100):
 
 # Contoh penggunaan
 keywords_file = 'katakunci.txt'  # Ganti dengan file yang berisi kata kunci
-num_objects_to_generate = 100  # Ganti dengan jumlah objek yang ingin dihasilkan
+num_objects_to_generate = 10  # Ganti dengan jumlah objek yang ingin dihasilkan
 generated_objects = generate_object_names(keywords_file, num_objects_to_generate)
 
 # Menyimpan DataFrame ke file CSV
