@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import random
 
 def generate_object_names(keywords_file, num_objects=1000):
@@ -11,10 +10,15 @@ def generate_object_names(keywords_file, num_objects=1000):
     if len(keywords) < 1000:
         raise ValueError("Jumlah kata kunci harus minimal 1000 untuk menghasilkan objek.")
 
-    # Menghasilkan nama objek secara acak
+    # Menghasilkan nama objek secara acak dan panjangnya diperpanjang menjadi 1000x
     object_names = []
     for _ in range(num_objects):
-        object_name = f"{random.choice(keywords)} {random.choice(keywords)}"
+        extended_name = []
+        for _ in range(1000):
+            word = random.choice(keywords)
+            if word not in extended_name:
+                extended_name.append(word)
+        object_name = ' '.join(extended_name)
         object_names.append(object_name)
 
     # Membuat DataFrame dengan nama objek
@@ -25,18 +29,7 @@ def generate_object_names(keywords_file, num_objects=1000):
 
 # Contoh penggunaan
 keywords_file = 'keyword.txt'  # Ganti dengan file yang berisi kata kunci
-num_objects_to_generate = 10000  # Ganti dengan jumlah objek yang ingin dihasilkan
-generated_objects = generate_object_names(keywords_file, num_objects_to_generate)
-
-# Menyimpan DataFrame ke file CSV
-generated_objects.to_csv('katakunci.txt', index=False)
-
-print(f"{num_objects_to_generate} Nama objek telah disimpan ke dalam katakunci.txt")
-
-
-# Contoh penggunaan
-keywords_file = 'keyword.txt'  # Ganti dengan file yang berisi kata kunci
-num_objects_to_generate = 10000  # Ganti dengan jumlah objek yang ingin dihasilkan
+num_objects_to_generate = 1000  # Ganti dengan jumlah objek yang ingin dihasilkan
 generated_objects = generate_object_names(keywords_file, num_objects_to_generate)
 
 # Menyimpan DataFrame ke file CSV
