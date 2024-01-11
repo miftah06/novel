@@ -50,7 +50,7 @@ def construct_novel_pdf(title, synopsis, keywords_csv, keywords_txt):
 
     # Randomize and add content until reaching a certain length
     while len(flowables) <= 400:
-        random_content = randomize_words("Random content for variety. ", random.randint(5, 15))
+        random_content = randomize_words("Random content for variety. ", random.randint(700, 1000))
         flowables.append(Paragraph(random_content, synopsis_style))
 
     # Add closing statement
