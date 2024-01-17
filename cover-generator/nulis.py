@@ -1,107 +1,44 @@
-import pandas as pd
-from fpdf import FPDF
-import pdfkit
 import os
+from PyPDF2 import PdfMerger
 
-def handle_nan(value, default):
-    return default if pd.isna(value) else value
+def merge_html_to_pdf(html_files, output_pdf):
+    merger = PdfMerger()
 
-def generate_html(data):
-    template = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>{handle_nan(data['Logo'][0], "Default Logo")}</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-        <style>
-            body {{
-                margin: 4%;
-                background-image: url('{handle_nan(data['Logo'][0], "Default Logo")}');
-                background-size: cover;
-                color: #ffffff; /* Warna teks putih agar terlihat jelas di atas gambar */
-            }}
-            .container {{
-                margin: auto;
-                width: 70%;
-                text-align: justify;
-            }}
-            .bold {{
-                font-weight: bold;
-                font-size: 16px;
-            }}
-            .indent {{
-                text-indent: 20px;
-            }}
-            .justify {{
-                text-align: justify;
-            }}
-            .left {{
-                text-align: left;  /* Ubah ke left agar teks opsional di rata kiri */
-            }}
-            .center {{
-                text-align: center;
-            }}
-            .opsional {{
-                background-color: rgba(255, 255, 255, 0.5); /* Pewarnaan latar belakang untuk teks opsional */
-                padding: 5px;
-                border-radius: 5px;
-                margin-bottom: 5px;
-            }}
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h1 class="bold center">{handle_nan(data['Bab'][0], "Default Bab")}</h1>
-            <p class="indent justify">
-                {handle_nan(data['Subjudul 1'][0], "Default Subjudul")}
-            </p class="left"> <!-- Ubah ke left agar opsional di rata kiri -->
-            <ol>
-    """
+    for html_file in html_files:
+        pdf_file = f"{os.path.splitext(html_file)[0]}.pdf"
+        cmd = f'wkhtmltopdf {html_file} {pdf_file}'
+        os.system(cmd)
+        merger.append(pdf_file)
 
-    # Generate list items for opsional data
-    for i in range(1, 16):  # Assuming opsional data is up to 15
-        opsional_key = f'Opsional {i}'
-        if opsional_key in data:
-            opsional_value = handle_nan(data[opsional_key][0], f"Default Opsional {i}")
-            template += f"                <li class='indent justify left opsional'>{opsional_value}</li>\n"
+    merger.write(output_pdf)
+    merger.close()
 
-    template += """
-            </ol>
-        </div>
-    </body>
-    </html>
-    """
-    return template
+    for html_file in html_files:
+        pdf_file = f"{os.path.splitext(html_file)[0]}.pdf"
+        os.remove(pdf_file)
 
-def generate_pdf_from_html(html_content, output_pdf):
-    with open('cover.html', 'w', encoding='utf-8') as html_file:
-        html_file.write(html_content)
+    print(f"\nProses selesai. File PDF yang indah tersedia di {output_pdf}.")
 
-    # Konversi HTML ke PDF menggunakan modul pdfkit
-    pdfkit.from_file('cover.html', output_pdf)
+def main():
+    # Input HTML files to be merged
+    html_files_to_merge = []
+    while True:
+        html_file = input("Masukkan nama file HTML (tekan Kosongkan untuk mengakhiri): ")
+        if not html_file:
+            break
+        html_files_to_merge.append(html_file)
 
-    # Hapus file HTML sementara
-    os.remove('cover.html')
+    # Output PDF file
+    output_pdf_file = input("Masukkan nama file PDF hasil merge: ")
 
-    print(f"Dokumen PDF berhasil disimpan di {output_pdf}")
+    # Merge HTML to PDF using wkhtmltopdf
+    merge_html_to_pdf(html_files_to_merge, output_pdf_file)
+
+    # Log the process
+    with open("merge_log.txt", "a") as log_file:
+        log_file.write(f"{', '.join(html_files_to_merge)} merged into {output_pdf_file}\n")
+
+    print(f"\nProses selesai. File PDF hasil merge tersedia.")
 
 if __name__ == "__main__":
-    print("Selamat datang di skrip novel.py!\n")
-
-    # Meminta input dari pengguna
-    data = {
-        'Logo': [input("Masukkan nama file Bab cover (kosongkan jika tidak ada): ").strip()],
-        'Bab': [input("Masukkan judul bab: ").strip()],
-        'Subjudul 1': [input("Masukkan subjudul 1: ").strip()],
-    }
-
-    for i in range(1, 16):
-        opsional_key = f'Opsional {i}'
-        opsional_value = input(f"Masukkan kalimat opsional {i} (kosongkan jika tidak ada): ").strip()
-        if opsional_value:
-            data[opsional_key] = [opsional_value]
-
-    html_content = generate_html(data)
-    output_pdf = "output.pdf"
-
-    generate_pdf_from_html(html_content, output_pdf)
+    main()

@@ -1,42 +1,160 @@
-import fitz  # PyMuPDF
-import numpy as np
-import chardet
+import os
+import csv
+from fpdf import FPDF
+from docx import Document
 from bs4 import BeautifulSoup
 from fpdf import FPDF
 
-def html_to_pdf(input_html, output_pdf):
-    # Membaca isi HTML dari file
-    with open(input_html, 'rb') as file:
-        # Deteksi encoding
-        rawdata = file.read()
-        result = chardet.detect(rawdata)
-        encoding = result['encoding']
+def bootstrap():
+    os.system("python bootstrap.py")
 
-        # Dekode isi HTML
-        html_content = rawdata.decode(encoding)
+def builder():
+    os.system("python builder.py")
 
-    # Parsing HTML dengan BeautifulSoup
-    soup = BeautifulSoup(html_content, 'html.parser')
-    paragraphs = [p.get_text() for p in soup.find_all('p')]
+def beauty_pdf(data):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_auto_page_break(auto=True, margin=15)
 
-    # Membuat PDF dengan PyMuPDF
-    pdf = fitz.open()
-    page = pdf.new_page()
+    # Setting Font
+    pdf.set_font("Arial", size=12)
 
-    # Menyusun teks ke dalam PDF
-    y_offset = 20
-    for paragraph in paragraphs:
-        page.insert_text((20, y_offset), paragraph, fontname="helv", fontsize=12)
-        y_offset += 14
+    # Judul
+    pdf.set_font("Arial", style='B', size=18)
+    pdf.cell(0, 10, data['Judul'][0], ln=True, align='C')
+    pdf.ln(10)
 
-    # Simpan hasil ke file PDF
-    pdf.save(output_pdf)
+    # Logo
+    if data['Logo'][0]:
+        pdf.image(data['Logo'][0], x=50, w=100)
+        pdf.ln(40)
+    else:
+        pdf.ln(10)
 
-    # Jika ingin menyimpan juga sebagai teks
-    with open('output_cover.txt', 'w', encoding='utf-8') as txt_file:
-        txt_file.write('\n'.join(paragraphs))
+    # Teks
+    pdf.set_font("Arial", style='', size=12)
+    pdf.multi_cell(0, 10, data['Teks'][0])
+    pdf.ln(10)
 
-    print(f"File PDF ({output_pdf}) dan teks (output_cover.txt) telah berhasil dibuat.")
+    # Oleh
+    pdf.set_font("Arial", style='I', size=12)
+    pdf.cell(0, 10, f"Oleh: {data['Oleh'][0]}", ln=True)
+    pdf.ln(10)
+
+    # Input Numerik
+    pdf.set_font("Arial", style='', size=12)
+    pdf.cell(0, 10, f"Numerik: {data['Input Numerik'][0]}", ln=True)
+    pdf.ln(5)
+
+    # Input 1
+    pdf.cell(0, 10, f"Input 1: {data['Input 1'][0]}", ln=True)
+    pdf.ln(5)
+
+    # Input 2
+    pdf.cell(0, 10, f"Input 2: {data['Input 2'][0]}", ln=True)
+    pdf.ln(5)
+
+    # Tahun
+    pdf.cell(0, 10, f"Tahun: {data['Tahun'][0]}", ln=True)
+
+    # Menyimpan PDF
+    pdf.output('output_cover.pdf')
+
+def buat_cover_doc(data):
+    doc = Document()
+
+    # Judul
+    doc.add_heading(data['Judul'][0], level=1).alignment = 1  # 1 for center alignment
+
+    # Teks
+    doc.add_paragraph(data['Teks'][0])
+
+    # Oleh
+    doc.add_paragraph(f"Oleh: {data['Oleh'][0]}")
+
+    # Input Numerik
+    doc.add_paragraph(f"Numerik: {data['Input Numerik'][0]}")
+
+    # Input 1
+    doc.add_paragraph(f"Input 1: {data['Input 1'][0]}")
+
+    # Input 2
+    doc.add_paragraph(f"Input 2: {data['Input 2'][0]}")
+
+    # Tahun
+    doc.add_paragraph(f"Tahun: {data['Tahun'][0]}")
+
+    # Menyimpan dokumen ke file .doc
+    doc.save('output_cover.doc')
+
+def buat_cover_pdf():
+    print("Selamat datang di skrip cover.py!\n")
+
+    # Meminta input dari pengguna
+    judul = input("Masukkan judul: ").strip()
+    logo = input("Masukkan logo (kosongkan jika tidak ada): ").strip()
+    teks = input("Masukkan judul tugas (contoh: Skripsi): ").strip()
+    nama = input("Masukkan nama: ").strip()
+    numerik = input("Masukkan input numerik (contoh: NIM): ").strip()
+    input_1 = input("Masukkan input 1 (contoh: Fakultas): ").strip()
+    input_2 = input("Masukkan input 2 (contoh: Universitas): ").strip()
+    tahun = input("Masukkan tahun (contoh: 2024): ").strip()
+
+    # Membuat data
+    data = {
+        'Judul': [judul],
+        'Logo': [logo],
+        'Teks': [teks],
+        'Oleh': [nama],
+        'Input Numerik': [numerik],
+        'Input 1': [input_1],
+        'Input 2': [input_2],
+        'Tahun': [tahun]
+    }
+
+    # Membuat PDF dengan estetika
+    beauty_pdf(data)
+
+    print("\nProses selesai. File PDF yang indah tersedia di output_cover.pdf.")
+
+    # Membuat dokumen Word
+    buat_cover_doc(data)
+    print("File Doc yang indah telah berhasil dibuat dalam file output_cover.doc.")
 
 if __name__ == "__main__":
-    html_to_pdf('cover.html', 'output_cover.pdf')
+    print("Selamat datang di skrip cover.py!\n")
+    
+    print("1. Menjalankan skrip Bootstrap untuk membuat file CSV.")
+    bootstrap()
+
+    print("\n2. Menjalankan skrip Builder untuk membuat file HTML.")
+    builder()
+
+    # Membaca data dari file CSV
+    with open('output.csv', newline='', encoding='utf-8') as csvfile:
+        reader = csv.DictReader(csvfile)
+        data = {key: [] for key in reader.fieldnames}
+
+        for row in reader:
+            for key in reader.fieldnames:
+                data[key].append(row[key].strip() if row[key] else '')
+
+    print("\n3. Menjalankan skrip Beauty-PDF untuk membuat PDF yang indah.")
+    # Memanggil fungsi beauty_pdf dengan menyediakan data yang dibutuhkan
+    beauty_pdf(data)
+
+    print("\nProses selesai. File PDF yang indah tersedia di output_cover.pdf.")
+
+    # Meminta input dari pengguna
+    judul = input("Masukkan judul: ").strip()
+    logo = input("Masukkan Cover: ").strip()
+    teks = input("Masukkan Tema Novel: ").strip()
+    nama = input("Masukkan nama: ").strip()
+    numerik = input("Masukkan input numerik (contoh: Nomor peserta): ").strip()
+    input_1 = input("Masukkan input 1 (contoh: Kisah nyata dari): ").strip()
+    input_2 = input("Masukkan input 2 (contoh: Pak Harto): ").strip()
+    tahun = input("Masukkan tahun (contoh: 2024): ").strip()
+    
+    # Membuat dokumen Word
+    buat_cover_doc(data)
+    print("File Doc yang indah telah berhasil dibuat dalam file output_cover.doc.")
